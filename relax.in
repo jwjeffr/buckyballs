@@ -1,0 +1,42 @@
+units           real
+atom_style      atomic
+boundary        p p p
+
+read_data       data-files/c60-ih.dat
+mass 1 12.011
+
+# Define interaction
+pair_style      airebo 3.0 0 0
+pair_coeff      * * CH.airebo C
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# Energy minimization settings
+timestep        1.0
+
+# Initial velocities (optional, if thermal relaxation is needed after minimization)
+# velocity      all create 300.0 12345
+
+# Define groups
+group           all type 1  # assuming all atoms are of type 1 (carbon)
+
+# Output settings
+thermo          100
+thermo_style    custom step pe ke etotal press vol
+
+# Dump (optional)
+# dump            1 all custom 500 dump.relax.lammpstrj id type x y z
+
+# Relaxation: Energy minimization
+min_style       cg
+min_modify      dmax 0.1 line quadratic
+minimize        1.0e-6 1.0e-8 10000 100000
+
+# Optional: box relaxation (e.g., if using "fix box/relax")
+fix            1 all box/relax iso 0.0 vmax 0.001
+minimize       1.0e-6 1.0e-8 10000 100000
+unfix          1
+
+# End of script
+write_data      data-files/c60-ih-relaxed.dat
