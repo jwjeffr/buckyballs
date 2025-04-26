@@ -26,7 +26,7 @@ thermo          100
 thermo_style    custom step pe ke etotal press vol
 
 # Dump (optional)
-# dump            1 all custom 500 dump.relax.lammpstrj id type x y z
+dump            1 all custom 500 dump.relax.lammpstrj id type x y z
 
 # Relaxation: Energy minimization
 min_style       cg
@@ -37,6 +37,11 @@ minimize        1.0e-6 1.0e-8 10000 100000
 fix            1 all box/relax iso 0.0 vmax 0.001
 minimize       1.0e-6 1.0e-8 10000 100000
 unfix          1
+
+# Optional NVE dynamics
+fix 2 all nve
+run 1000
+unfix 2
 
 # End of script
 write_data      data-files/c60-ih-relaxed.dat
