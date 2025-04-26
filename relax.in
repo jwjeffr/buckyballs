@@ -1,4 +1,4 @@
-units           real
+units           metal
 atom_style      atomic
 boundary        p p p
 
